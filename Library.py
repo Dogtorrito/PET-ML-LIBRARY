@@ -178,8 +178,6 @@ class LinearRegressor:
                     grad = self._calc_gradient(X_batch,y_batch,f,w1) + regular
                     w1 -= self.alpha*grad
             self.w = w1
-#Для деревьев и MAPE MAE в линейной регрессии нормализация не нужна
-#В деревьях не нужно смещение кажется (уточнить)
 
 class Node:
     """
@@ -211,11 +209,11 @@ class Node:
             (default None).
         """
         
-        self.feature_idx = feature_idx    # Индекс признака для разделения
-        self.threshold = threshold        # Порог разделения
-        self.value = value                # Значение в листовом узле (среднее для регрессии)
-        self.left = left                  # Левое поддерево (меньше порога)
-        self.right = right                # Правое поддерево (больше порога)
+        self.feature_idx = feature_idx 
+        self.threshold = threshold       
+        self.value = value                
+        self.left = left                  
+        self.right = right                
 
 class DecisionTreeRegressor:
     """
@@ -544,12 +542,6 @@ class Bagging_Forest_Regression:
         final_predictions = np.mean(predictions,axis=1)
         return final_predictions
 
-    bla1=(model,False,True)
-    bla2=(model,False,True)
-    bla3=(model,False,True)
-    base_models  = [bla1,bla1,bla1]
-    for model, flag1, flag2 in base_models 
-
 class ModelWithConfig:
     """
     A class for storing a model and its configuration,
@@ -639,7 +631,6 @@ class StackingRegressor:
         self.reset_scalers()
         X_train, X_val, y_train, y_val = self.split_data(X, y)
 
-        # Обучение базовых моделей
         for model_with_config in self.base_models:
             X_train_prepared = self.prepare_features(
                 X_train,
@@ -650,7 +641,6 @@ class StackingRegressor:
             )
             model_with_config.model.fit(X_train_prepared, y_train)
 
-        # Подготовка данных для мета-модели
         val_predictions = []
         for model_with_config in self.base_models:
             X_val_prepared = self.prepare_features(
@@ -713,7 +703,6 @@ class StackingRegressor:
         if scaling_option and scaling_option not in scalers:
             raise ValueError(f"Unknown scaling option: {scaling_option}")
         
-        # Нормализация данных, если она указана для данной модели
         if scaling_option == 'MinMaxScaler':
             scaler_name = 'MinMaxScaler'
             scaler = scalers['MinMaxScaler']
@@ -777,7 +766,7 @@ class StackingRegressor:
         :return: np.ndarray
             A vector of predicted target values.
         """
-        # Получение предсказаний базовых моделей
+    
         test_predictions = []
         for model_with_config in self.base_models:
             X_test_prepared = self.prepare_features(
